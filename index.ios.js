@@ -10,6 +10,8 @@ import {
   View,
 } from 'react-native';
 
+import getWeather from "/Users/olegmytsouda/Desktop/q/Proj/ios/API.js"
+
 class Proj extends Component {
 
   constructor(props) {
@@ -17,20 +19,18 @@ class Proj extends Component {
     this.state = { loaded: false , response: [] };
     }
 
-  getWeather(){
-      fetch("http://api.openweathermap.org/data/2.5/forecast/city?id=690197&APPID=4259ac50f5b3023fdc36416348a232a9", {method: "GET"})
-      .then((response) => response.json())
-      .then((responseData) => {
+  getData(){
+    getWeather().then((response) => {
           this.setState({
             loaded: true,
-            response: responseData,
+            response: response,
         });
       })
       .done();
   }
 
   componentDidMount() {
-    this.getWeather();
+    this.getData();
   }
 
   renderLoadingView() {
