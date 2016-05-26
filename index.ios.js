@@ -1,89 +1,58 @@
-import React, {
-  Component,
-} from 'react';
-import {
+'use strict';
+
+var React = require('react-native');
+var {
   AppRegistry,
-  Image,
-  ListView,
   StyleSheet,
+  Component,
   Text,
   View,
-} from 'react-native';
+  Navigator,
+  TouchableOpacity,
+  Image,
+} = React;
 
-import getWeather from "/Users/olegmytsouda/Desktop/q/Proj/ios/API.js"
+var SplashPage = require('./SplashPage.js');
+var LoginPage = require('./LoginPage');
+var MainPage = require('./MainPage');
 
-class Proj extends Component {
-
-  constructor(props) {
-    super(props);
-    this.state = { loaded: false , response: [] };
-    }
-
-  getData(){
-    getWeather().then((response) => {
-          this.setState({
-            loaded: true,
-            response: response,
-        });
-      })
-      .done();
-  }
-
-  componentDidMount() {
-    this.getData();
-  }
-
-  renderLoadingView() {
-   return (
-     <View style={styles.container}>
-       <Text>
-         Loading weather...
-       </Text>
-     </View>
-   );
- }
-
+class App extends Component {
   render() {
-
-    if (!this.state.loaded) {
-      return this.renderLoadingView();
-    }
     return (
-      <View style={styles.container}>
-        <Image
-          source={{uri: 'http://openweathermap.org/img/w/'+this.state.response.list[0].weather[0].icon+'.png'}}
-          style={styles.thumbnail}
-        />
-        <Text style={styles.welcome}>
-          Тепер у Великому Березному {(this.state.response.list[0].main.temp_max - 273).toFixed(0)} °С!
-        </Text>
-      </View>
+      <Navigator
+          initialRoute={{id: 'SplashPage', name: 'Index'}}
+          renderScene={this.renderScene.bind(this)}
+          configureScene={(route) => {
+            if (route.sceneConfig) {
+              return route.sceneConfig;
+            }
+            return Navigator.SceneConfigs.FloatFromRight;
+          }} />
+
     );
+  }
+  renderScene(route, navigator) {
+    var routeId = route.id;
+    if (routeId === 'SplashPage') {
+      return (
+        <SplashPage
+          navigator={navigator} />
+      );
+    }
+    if (routeId === 'LoginPage') {
+      return (
+        <LoginPage
+          navigator={navigator} />
+      );
+    }
+    if (routeId === 'MainPage') {
+      return (
+        <MainPage
+            navigator={navigator} />
+      );
+    }
+    return this.noRoute(navigator);
   }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-  thumbnail: {
-  width: 100,
-  height: 100,
-  },
-});
-
-
-AppRegistry.registerComponent('Proj', () => Proj);
+AppRegistry.registerComponent('Proj', () => App);
